@@ -1,25 +1,19 @@
 #!/usr/bin/perl
+
+use Net::EPP::Simple;
 use strict;
-use Data::Dumper;
+ 
+my $epp = Net::EPP::Simple->new(
+	host    => '192.168.35.216',
+	user    => 'test',
+	pass    => 'Test2022',
+	debug => 1,
+	port => 700,
+	timeout => 15,
+);
 
-# path to the server configuration file
-my $confFileName = "conf/server.conf";
+my $domain = 'example.cm';
 
-my $fh;
-open($fh,"<",$confFileName);
+my $result = $epp->check_domain($domain);
 
-my %conf;
-
-# extracting the settings file
-while (my $row = <$fh>){
-	$row =~ s/^\s+|\s+$| //g;
-	my @data = split("=",$row);
-	$conf{"$data[0]"} = $data[1];
-}
-
-# typecasting the certain fields to intergers 
-$conf{"debug"} =  int($conf{"debug"});
-$conf{"port"} =  int($conf{"port"});
-$conf{"timeout"} =  int($conf{"timeout"});
-
-print Dumper(\%conf);
+print($result)

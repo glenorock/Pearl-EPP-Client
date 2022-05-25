@@ -4,7 +4,7 @@ use Net::EPP::Simple;
 use strict;
 use warnings;
 
-sub getConfigs{
+sub getConfigs {
     # path to the server configuration file
     my $confFileName = "conf/server.conf";
 
@@ -28,33 +28,38 @@ sub getConfigs{
     return %conf
 }
 
-sub new{
-    my $class = shift;
-    my $self = Net::EPP::Simple->new(
-        host => shift,
-        user => shift,
-        pass => shift,
-        debug => shift,
-        port => shift,
-        timeout => shift,
-    );
-    bless  $self, $class; 
-    return $self;
-}
-
 # get an epp client instance
-sub getInstance
-{
+sub getInstance {
     my %conf = getConfigs();
-    return new EPP::Client(
-        $conf{"host"},
-        $conf{"user"},
-        $conf{"pass"},
-        $conf{"debug"},
-        $conf{"port"},
-        $conf{"timeout"},
+    return Net::EPP::Simple->new(
+        host => $conf{"host"},
+        user => $conf{"user"},
+        pass => $conf{"pass"},
+        debug => int($conf{"debug"}),
+        port => int($conf{"port"}),
+        timeout => int($conf{"timeout"}),
     );
 }
 
+# Checking the availability of an object
+
+sub check_domain {
+    my $epp = getInstance();
+    my $domain = $_[0];
+    my $result = $epp->check_domain($domain);
+    print "\n*****************************************************************************\n";
+    print "$result\n";
+    print "\n*****************************************************************************\n";
+    return $result;
+}
+
+sub check_host{
+    my $epp = getInstance();
+    my $result = $epp->check_host($_[0]);
+    print "\n*****************************************************************************\n";
+    print "$result\n";
+    print "\n*****************************************************************************\n";
+    return $result;
+}
 
 1;
