@@ -12,16 +12,18 @@ In order to carry achieve this project, the following libraries were used
 # Deployment
 To deploy this open source on your terminal, you'll need to do the following.
 
-1. Ensure the dependencies mentioned above are installed. To do this, you can execute the <b>run.sh</b> file
-
-2. You'll see a folder named conf, in which you shall fill in the following:
-
-a. The server.conf file shall contain the information neccessary connection into the EPP server
+<ol>
+  <li>Ensure the dependencies mentioned above are installed. To do this, you can execute the <b>run.sh</b> file</li>
+  <li>You'll see a folder named conf, in which you shall fill in the following:</li>
+  <ol>
+    <li> The server.conf file shall contain the information neccessary connection into the EPP server </li>
+  </ol>
+</ol>
 
 # TO DO
 
-<ul>
-  <li>Implement the controllers.</li>
-  <li>Implement a data formater. (hash <-> JSON)</li>
-  <li>Implement the REST API.</li>
-</ul>
+<ol>
+  <li>Implement the controllers</li>
+  <li>Implement a data formater (hash <-> JSON)</li>
+  <li>Implement the REST API</li>
+</ol>
