@@ -1,2 +1,1 @@
-cpan App::cpanminus
-cpanm Module::Name
+morbo server.pl

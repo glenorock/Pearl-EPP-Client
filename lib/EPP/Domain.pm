@@ -1,6 +1,5 @@
-package EPP::Client;
+package EPP::Domain;
 
-use Net::EPP::Simple;
 use strict;
 use warnings;
 
@@ -12,7 +11,7 @@ sub getConfigs {
     open($fh,"<",$confFileName);
 
     my %conf;
-    
+
     # extracting the settings file
     while (my $row = <$fh>){
         $row =~ s/^\s+|\s+$| //g;
@@ -28,8 +27,7 @@ sub getConfigs {
     return %conf
 }
 
-# get an epp client instance
-sub getInstance {
+sub getClient {
     my %conf = getConfigs();
     return Net::EPP::Simple->new(
         host => $conf{"host"},
@@ -40,25 +38,27 @@ sub getInstance {
         timeout => int($conf{"timeout"}),
     );
 }
-
-# Checking the availability of an object
-
-sub check_domain {
-    my $epp = getInstance();
-    my $domain = $_[0];
-    my $result = $epp->check_domain($domain);
-    print "\n*****************************************************************************\n";
-    print "$result\n";
-    print "\n*****************************************************************************\n";
+sub check {
+    my $epp = getClient();
+    my $result = $epp->check_domain($_[0]);
     return $result;
 }
 
-sub check_host{
-    my $epp = getInstance();
-    my $result = $epp->check_host($_[0]);
-    print "\n*****************************************************************************\n";
-    print "$result\n";
-    print "\n*****************************************************************************\n";
+sub info {
+    my $epp = getClient();
+    my $result = $epp->domain_info($_[0]);
+    return $result;
+}
+
+sub create {
+    my $epp = getClient();
+    my $result = $epp->create_domain($_[0]);
+    return $result;
+}
+
+sub update {
+    my $epp = getClient();
+    my $result = $epp->update_domain($_[0]);
     return $result;
 }
 

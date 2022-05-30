@@ -1,5 +1,5 @@
 use lib 'E:\STAGE ANTIC\code\Pearl-EPP-Client\lib';
-use EPP::Object::Domain;
+use EPP::Domain;
 
 my $contact = {
     'id' => 'testContactID',
@@ -29,7 +29,4 @@ my $contact = {
     'email' => 'jdoe@example.com',
 };
 
-EPP::Object::Domain::check("example.text")
-
-
-# EPP::Object::Contact::check("orock");
+EPP::Domain::check("example.text")
