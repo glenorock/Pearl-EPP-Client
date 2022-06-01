@@ -31,8 +31,10 @@ To deploy this open source on your terminal, you'll need to do the following.
 </ol>
 
 # Run the server
-In order to run the server, simply execute the command: 
-<ul>
-  <li><b> morbo server.pl </b> while in development environment, and </li>
-  <li><b></b> while in production</li>
-</ul>
+In order to run the server, simply execute the command <b> morbo server.pl </b> while in development environment
+
+# ToDo
+<ol>
+  <li> Implement a script which would run this  program as a deamon</li>
+  <li> Customise the script to be run on a Linux VM (OS which was choosen for its deployment)</li>
+</ol>
