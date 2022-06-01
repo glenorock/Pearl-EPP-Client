@@ -2,7 +2,12 @@
 This project provides a simple EPP client deployed in the form a Rest API
 
 # Project Structure
-The project is organised as such
+The project consist of 3 main files:
+<ol> 
+  <li><b>/conf/server.conf :</b> Configuration file containing the connecion details to the EPP server </li>
+  <li><b>/lib/EPP/Client.pm :</b> Pearl module which provides us with an epp client </li>
+  <li><b>server.pl:</b> This script is used to create a server which can be accessed by external systems</li>
+</ol>
 
 # Dependencies
 In order to carry achieve this project, the following libraries were used
