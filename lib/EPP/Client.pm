@@ -41,25 +41,4 @@ sub getInstance {
     );
 }
 
-# Checking the availability of an object
-
-sub check_domain {
-    my $epp = getInstance();
-    my $domain = $_[0];
-    my $result = $epp->check_domain($domain);
-    print "\n*****************************************************************************\n";
-    print "$result\n";
-    print "\n*****************************************************************************\n";
-    return $result;
-}
-
-sub check_host{
-    my $epp = getInstance();
-    my $result = $epp->check_host($_[0]);
-    print "\n*****************************************************************************\n";
-    print "$result\n";
-    print "\n*****************************************************************************\n";
-    return $result;
-}
-
 1;
