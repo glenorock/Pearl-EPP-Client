@@ -26,7 +26,7 @@ To deploy this open source on your terminal, you'll need to do the following.
     <li>port</li>
     <li>timeout</li>
   </ol>
-  This file should follow the format <b> param = value <b> which each parameter being on its own line
+  This file should follow the format <b> param = value </b> with each parameter being on its own line
   </li>
 </ol>
 
