@@ -6,10 +6,21 @@ use Try::Tiny;
 use Data::Dumper;
 use EPP::Client;
 
+options '*' => sub {
+    my $self = shift;
+    $self->res->headers->header('Access-Control-Allow-Origin' => '*');
+    #$self->res->headers->header('Access-Control-Allow-Credentials' => 'true');
+    #$self->res->headers->header('Access-Control-Allow-Methods' => 'GET, OPTIONS, POST, DELETE, PUT');
+    #$self->res->headers->header('Access-Control-Allow-Headers' => 'Content-Type');
+    #$self->res->headers->header('Access-Control-Max-Age' => '1728000');
+    $self->respond_to(any => { data => '', status => 200 });
+};
+
 # objects info
 
-get '/info/host/:host' => sub ($c){
-    my $host = $c->param('host');
+my $ext = '.cm';
+get '/info/host/:domain/:host' => sub ($c){
+    my $host = $c->param('host').".".$c->param('domain').$ext;
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         my $info = $epp->host_info($host);
@@ -23,9 +34,9 @@ get '/info/host/:host' => sub ($c){
     }
 };
 
-get '/info/contact/:id/:authInfo' => sub ($c){
+get '/info/contact/:id' => sub ($c){
     my $contact = $c->param('id');
-    my $authInfo = $c->param('authInfo');
+    my $authInfo = 'glen';
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         my $info = $epp->contact_info($contact,$authInfo);
@@ -39,59 +50,13 @@ get '/info/contact/:id/:authInfo' => sub ($c){
     }
 };
 
-get '/info/contact/:id/' => sub ($c){
-    my $contact = $c->param('id');
-    my $epp = EPP::Client::getInstance();
-    if(defined($epp)){
-        my $info = $epp->contact_info($contact);
-        if(defined($info)){
-            $c->render(json => {"status",200,"info",$info});
-        }else{
-            $c->render(json => {"status",404,"error","object not found"});
-        }
-    }else{
-        $c->render(json => {"status",500,"error","Internal Server Error"});
-    }
-};
-
-get '/info/domain/:domain/:authInfo/:follow' => sub ($c){
-    my $host = $c->param('host');
-    my $authInfo = $c->param('authInfo');
-    my $follow = $c->param('follow');
-    my $epp = EPP::Client::getInstance();
-    if(defined($epp)){
-        my $info = $epp->host_info($host,$authInfo,$follow);
-        if(defined($info)){
-            $c->render(json => {"status",200,"info",$info});
-        }else{
-            $c->render(json => {"status",404,"error","object not found"});
-        }
-    }else{
-        $c->render(json => {"status",500,"error","Internal Server Error"});
-    }
-};
-
-get '/info/domain/:domain/:authInfo' => sub ($c){
-    my $host = $c->param('host');
-    my $authInfo = $c->param('authInfo');
-    my $epp = EPP::Client::getInstance();
-    if(defined($epp)){
-        my $info = $epp->host_info($host,$authInfo);
-        if(defined($info)){
-            $c->render(json => {"status",200,"info",$info});
-        }else{
-            $c->render(json => {"status",404,"error","object not found"});
-        }
-    }else{
-        $c->render(json => {"status",500,"error","Internal Server Error"});
-    }
-};
-
 get '/info/domain/:domain' => sub ($c){
-    my $host = $c->param('host');
+    my $domain = $c->param('domain').$ext;
+    my $authInfo = 'Test2022';
+    my $follow = 1;
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
-        my $info = $epp->host_info($host);
+        my $info = $epp->domain_info($domain); #,$authInfo,$follow);
         if(defined($info)){
             $c->render(json => {"status",200,"info",$info});
         }else{
@@ -104,16 +69,12 @@ get '/info/domain/:domain' => sub ($c){
 
 # check objects 
 
-get '/check/host/:host' => sub ($c){
-    my $host = $c->param('host');
+get '/check/host/:domain/:host' => sub ($c){
+    my $host = $c->param('host').".".$c->param('domain').$ext;
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         my $result = $epp->check_host($host);
-        if ($result == 0){
-            $c->render(json => {"check",$host,"status",200,"avail",$result,"message","Host is already provisioned"});
-        }else{
-            $c->render(json => {"check",$host,"status",200,"avail",$result,"message","Host is available"});
-        }
+        $c->render(json => {"check",$host,"status",200,"avail",$result});
     }else{
         $c->render(json => {"status",500,"error","Internal Server Error"});
     }
@@ -124,26 +85,18 @@ get '/check/contact/:id' => sub ($c){
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         my $result = $epp->check_contact($id);
-        if ($result == 1){
-            $c->render(json => {"check",$id,"status",200,"avail",$result,"message","Contact exists"});
-        }else{
-            $c->render(json => {"check",$id,"status",200,"avail",$result,"message","Contact does not exist"});
-        }
+        $c->render(json => {"check",$id,"status",200,"avail",$result});
     }else{
         $c->render(json => {"status",500,"error","Internal Server Error"});
     }
 };
 
 get '/check/domain/:domain' => sub ($c){
-    my $domain = $c->param('domain');
+    my $domain = $c->param('domain').$ext;
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
-        my $result = $epp->check_host($domain);
-        if ($result == 1){
-            $c->render(json => {"check",$domain,"status",200,"avail",0,"message","Host is already provisioned"});
-        }else{
-            $c->render(json => {"check",$domain,"status",200,"avail",1,"message","Host is available"});
-        }
+        my $result = $epp->check_domain($domain);
+        $c->render(json => {"check",$domain,"status",200,"avail",$result});
     }else{
         $c->render(json => {"status",500,"error","Internal Server Error"});
     }
@@ -187,7 +140,7 @@ post '/domain' => sub ($c) {
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         $epp->create_domain($domain);
-        my $info = $epp->host_info($domain->{"name"});
+        my $info = $epp->domain_info($domain->{"name"});
         if(defined($info)){
             $c->render(json => {"status",201,"info",$info});
         }else{
@@ -236,7 +189,7 @@ put '/domain' => sub ($c) {
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         $epp->update_domain($domain);
-        my $info = $epp->host_info($domain->{"name"});
+        my $info = $epp->domain_info($domain->{"name"});
         if(defined($info)){
             $c->render(json => {"status",201,"info",$info});
         }else{
@@ -248,8 +201,8 @@ put '/domain' => sub ($c) {
 };
 
 # renew domain
-put '/domain' => sub ($c) {
-    my $domain = decode_json($c->req->body);
+put '/domain/:name' => sub ($c) {
+    my $domain = $c->param('name');
     my $epp = EPP::Client::getInstance();
     if(defined($epp)){
         my $result = $epp->renew_domain($domain);
@@ -267,5 +220,12 @@ put '/domain' => sub ($c) {
         $c->render(json => {"status",500,"error","Internal Server Error"});
     }
 };
+
+app->hook(after_dispatch => sub {
+    my $c = shift;
+    $c->res->headers->header('Access-Control-Allow-Origin' => '*');
+});
+
+app->secrets(['My very secret passphrase.']);
 
 app->start;

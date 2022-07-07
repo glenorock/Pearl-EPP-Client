@@ -36,7 +36,7 @@ To deploy this open source on your terminal, you'll need to do the following.
 </ol>
 
 # Run the server
-In order to run the server, simply execute the command <b> morbo server.pl </b> while in development environment
+In order to run the server, simply execute the command <b> morbo -l http://*:3003 server.pl </b> while in development environment
 
 # ToDo
 <ol>
